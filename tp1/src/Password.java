@@ -1,6 +1,8 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +42,7 @@ public class Password {
      */
     public static String bruteForce6Digit(String targetHash) {
 
+        // Code here: 2.1 Brute force
         for (int i =0; i< 1000000; i++){
             String indiceString = String.format("%06d", i);
             String indiceStringHashe = hashPassword(indiceString);
@@ -67,6 +70,7 @@ public class Password {
      */
     public static boolean isStrongPassword(String password) {
 
+        // Code here: 2.2 Strong password
         if (password.length() < 12){
             return false;
         }
@@ -104,9 +108,14 @@ public class Password {
      */
     public static HashMap<String, Boolean> checkPasswordsList(ArrayList<String> passwords) {
 
-        // Code here
+        // Code here: Check password list
 
-        return null;
+        HashMap<String, Boolean> map = new HashMap<>();
+        for (String password : passwords){
+            map.put(password, isStrongPassword(password));
+        }
+
+        return map;
     }
 
     /**
@@ -123,9 +132,43 @@ public class Password {
      */
     public static String generatePassword(int nbCar) {
 
-        // Code here
+        // Code here: 2.4 Generate a Random Password
+        
+        if (nbCar < 4){
+            throw new IllegalArgumentException("La longueur doit être au moins de 4");
+        }
 
-        return null;
+        String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+        String lowerCase = "abcdefghijklmnopqrstuvwxuz";
+        String digits = "0123456789";
+        String specialCharacter = "!@#$%^&*()-_=+";
+
+        SecureRandom random = new SecureRandom();
+
+        List<Character> password = new ArrayList<>();
+
+        // Ajout d'un élément de chaque catégorie
+        password.add(upperCase.charAt(random.nextInt(upperCase.length())));
+        password.add(lowerCase.charAt(random.nextInt(lowerCase.length())));
+        password.add(digits.charAt(random.nextInt(digits.length())));
+        password.add(specialCharacter.charAt(random.nextInt(specialCharacter.length())));
+
+
+        // Remplissage des caractères restants au hasard pour chaque catégorie
+        String allChars = upperCase + lowerCase + digits + specialCharacter;
+
+        for (int i=4; i<nbCar; i++){
+            password.add(allChars.charAt(random.nextInt(allChars.length())));
+        }
+        Collections.shuffle(password);
+
+        // Conversion de la liste en chaîne de caractères pou renvoyer
+        StringBuilder passwordString = new StringBuilder();
+        for (Character character:password){
+            passwordString.append(character);
+        }
+
+        return passwordString.toString();
     }
 
     public static void main(String[] args) {
